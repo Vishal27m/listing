@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Categories - E-Auction</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .jumbotron {
+      background-color: #f8f9fa;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      margin: 2rem auto;
+      max-width: 700px;
+    }
+
+    .header-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background-color: #343a40;
+      color: white;
+    }
+
+    .header-links button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .header-links button:hover {
+      background-color: #0056b3;
+    }
+
+    .category-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      justify-content: center;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .category-btn {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 5px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      text-align: center;
+    }
+
+    .category-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="header-links">
+    <button onclick="location.href='index.html'">Home</button>
+    <button onclick="location.href='home.html'">Back</button>
+  </div>
+
+  <div class="container">
+    <div class="jumbotron text-center mx-2 mb-5">
+      <h2 class="card-title">CATEGORIES</h2>
+      <p class="my-4 h6">Select a category to view listings.</p>
+      <img src="./img/forcategories.svg" alt="Categories Image" style="height: 250px; max-width: 100%;">
+      <br><br>
+      <div class="category-container">
+        <button class="category-btn" onclick="location.href='category.html?category=Fashion'">Fashion</button>
+        <button class="category-btn" onclick="location.href='category.html?category=Electronics'">Electronics</button>
+        <button class="category-btn" onclick="location.href='category.html?category=Sports'">Sports</button>
+        <button class="category-btn" onclick="location.href='category.html?category=Toys'">Toys</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Custom styles for the jumbotron and form */
+    .jumbotron {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 2rem;
+      margin: 2rem auto;
+      max-width: 600px;
+      text-align: center; /* Centers all text inside */
+    }
+
+    .jumbotron h2, .jumbotron p {
+      text-align: center; /* Ensures title and subtitle are centered */
+    }
+
+    .embed-responsive {
+      display: block;
+      margin: 0 auto; /* Centers the image */
+      height: 300px;
+    }
+
+    .form-group label {
+      display: block;
+      text-align: center; /* Centering labels */
+      font-weight: bold;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      text-align: center; /* Centers form fields */
+    }
+
+    .form-control {
+      border-radius: 5px;
+      border: 1px solid #ced4da;
+      padding: 0.5rem;
+      width: 80%;
+      margin: 0 auto; /* Centers input fields */
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .btn-primary, .btn-secondary {
+      border: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+    .listing-container {
+  display: flex;
+  flex-direction: column; /* Stack listings in a column */
+  align-items: center; /* Center them */
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.listing-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 100%; /* Make the card take full width */
+  max-width: 400px; /* Limit max width for better readability */
+  box-sizing: border-box;
+}
+
+
+    .listing-card h5 {
+      font-size: 1.2rem;
+      color: #343a40;
+    }
+
+    .listing-card p {
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: 5px;
+    }
+
+    .btn-danger:hover {
+      background-color: #bd2130;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="jumbotron text-center mx-2 mb-5">
+      <h2 class="card-title">Dashboard</h2>
+      <p class="my-4 h6">Enter your details to view your created listings.</p>
+
+      <!-- Dashboard Image (Centered) -->
+      <img src="./img/fordashboard.svg" alt="Dashboard Image" class="embed-responsive">
+      <br><br>
+
+      <!-- Form to input bid_owner and password -->
+      <form id="login-form">
+        <div class="form-group">
+          <label for="bid-owner">Bid Owner:</label>
+          <input type="text" id="bid-owner" class="form-control" placeholder="Enter your bid owner" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+        </div>
+        <div class="btn-container">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-secondary" onclick="goBack()">Back</button>
+        </div>
+      </form>
+
+      <br>
+      <h4 class="mt-4">Your Listings</h4>
+      <div id="created-listings" class="listing-container">
+        <!-- Listings will be dynamically inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("login-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const bidOwner = document.getElementById("bid-owner").value;
+      const password = document.getElementById("password").value;
+
+      fetch("/api/dashboard-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ bid_owner: bidOwner, password: password }),
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        const createdListingsContainer = document.getElementById("created-listings");
+        createdListingsContainer.innerHTML = ""; // Clear previous content
+
+        if (data.success) {
+          data.createdListings.forEach(listing => {
+            const listingCard = document.createElement("div");
+            listingCard.className = "listing-card";
+            listingCard.innerHTML = `
+              <h5>${listing.title}</h5>
+              <p>Status: ${listing.status}</p>
+              <p>Current Bid: $${listing.currentBid}</p>
+              ${listing.status === "Active" ? `<button class="btn btn-danger" onclick="closeBid('${listing.id}')">Close Bid</button>` : ""}
+            `;
+            createdListingsContainer.appendChild(listingCard);
+          });
+        } else {
+          alert(data.error);
+        }
+      })
+      .catch((error) => {
+        alert("Error fetching listings: " + error);
+      });
+    });
+
+    // Function to close a bid
+    window.closeBid = function (listingId) {
+      fetch(`/api/listings/${listingId}/close`, {
+        method: "POST",
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert("Bid closed successfully!");
+          location.reload(); // Refresh the dashboard
+        } else {
+          alert(data.error);
+        }
+      })
+      .catch(() => {
+        alert("Error closing bid.");
+      });
+    };
+
+    // Back button function
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

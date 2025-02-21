@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Closed Listings - E-Auction</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Styling for the jumbotron */
+    .jumbotron {
+      background-color: #f8f9fa;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      margin: 2rem auto;
+      max-width: 800px;
+    }
+
+    .jumbotron h2 {
+      color: #343a40;
+      font-size: 2.5rem;
+    }
+
+    .jumbotron p {
+      color: #6c757d;
+      font-size: 1.25rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .product-card h4 {
+      color: #007bff;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .no-listings {
+      text-align: center;
+      color: #777;
+      font-size: 1.5rem;
+      margin-top: 40px;
+    }
+
+    .header-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background-color: #343a40;
+      color: white;
+    }
+
+    .header-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+
+    .header-links a:hover {
+      text-decoration: underline;
+    }
+
+    .btn-back {
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+    }
+
+    .btn-back:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header with back button -->
+  <div class="header-links">
+    <a href="index.html">Home</a>
+    <a href="home.html" class="btn-back">Back</a>
+  </div>
+
+  <!-- Main container for listings -->
+  <div class="container">
+    <div class="jumbotron text-center mx-2 mb-5">
+      <!-- Title and description -->
+      <h2 class="card-title h2">CLOSED LISTINGS</h2>
+      <p class="my-4 h6">These are the listings that are closed. View the product names here.</p>
+      <br>
+
+      <!-- Product listings will be inserted here -->
+      <div id="product-list" class="product-list">
+        <!-- Product details will be dynamically inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Script to fetch closed listings and display them -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const productList = document.getElementById('product-list');
+      const category = 'electronics'; // Set category here, or dynamically pass it based on your app
+
+      // Fetch closed listings for the specific category from the backend
+      fetch(`/api/listings/${category}/closed`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.listings && data.listings.length > 0) {
+            data.listings.forEach(listing => {
+              const productCard = document.createElement('div');
+              productCard.className = 'product-card';
+              productCard.innerHTML = `
+                <h4>${listing.title}</h4>
+                <p>Winning Bid: $${listing.current_bid}</p>
+                <p>Winner: ${listing.bid_winner}</p>
+              `;
+              productList.appendChild(productCard);
+            });
+          } else {
+            productList.innerHTML = `
+              <img src="./img/forclosed.svg" alt="No Listings" style="height: 350px; display: block; margin: 0 auto;">
+              <h3 class="no-listings">No Closed Listings Available</h3>
+            `;
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching listings:', error);
+          productList.innerHTML = `<h3 class="no-listings">Failed to load closed listings.</h3>`;
+        });
+    });
+  </script>
+
+  <!-- JQuery -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - E-Auction</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+    }
+
+    /* Container for Header */
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    /* Header Styling */
+    .header-container {
+      background-color: #343a40;
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-evenly;
+      margin-bottom: 0.5rem;
+    }
+
+    .listing-buttons {
+  display: flex;
+  justify-content: center;  /* Centers the buttons */
+  gap: 20px;  /* Creates equal space between buttons */
+}
+
+.listing-buttons a {
+  flex: 1;  /* Makes both buttons take equal width */
+  text-align: center;
+  padding: 15px 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;  /* Removes underline */
+}
+
+
+
+    /* Buttons */
+    .btn-custom {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      text-decoration: none;
+      color: white;
+      border: none;
+      transition: background 0.3s ease-in-out;
+      flex: 1; /* Ensures equal spacing */
+      text-align: center;
+      margin: 0 10px;
+    }
+
+    .btn-home {
+      background-color: #007bff;
+    }
+
+    .btn-home:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-categories {
+      background-color: #28a745;
+    }
+
+    .btn-categories:hover {
+      background-color: #218838;
+    }
+
+    .btn-dashboard {
+      background-color: #ffc107;
+      color: black;
+    }
+
+    .btn-dashboard:hover {
+      background-color: #e0a800;
+    }
+
+    .btn-logout {
+      background-color: #dc3545;
+    }
+
+    .btn-logout:hover {
+      background-color: #c82333;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-success {
+      background-color: #28a745;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+    }
+
+    /* Jumbotron styling */
+    .jumbotron {
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .lead {
+      font-size: 1.2rem;
+      color: #555;
+    }
+
+    .embed-responsive {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Equal spacing for listing buttons */
+    .listing-buttons {
+      display: flex;
+      justify-content: space-evenly;
+      margin-top: 1rem;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Main Container -->
+  <div class="container">
+    
+    <!-- Header -->
+    <header class="header-container">
+      <div class="nav-row">
+        <a href="index.html" class="btn btn-custom btn-home">Home</a>
+        <a href="categories.html" class="btn btn-custom btn-categories">Categories</a>
+      </div>
+      <div class="nav-row">
+        <a href="dashboard.html" class="btn btn-custom btn-dashboard">Dashboard</a>
+        <a href="index.html" class="btn btn-custom btn-logout">Logout</a>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="jumbotron mt-4">
+      <p class="lead">Welcome to your dashboard. Here you can manage your auctions, view active listings, create new listings, and more.</p>
+      <br>
+      <img src="./img/forindex.svg" alt="indeximage" style="height: 350px;" class="embed-responsive">
+      <br><br>
+      <p class="lead">This is an e-commerce auction site where you can post auction listings, place bids, comment, and manage a watchlist.</p>  
+      <p class="lead">View ongoing auctions in Active Listings, or sell a product via Create Listing.</p>
+      <br>
+     <!-- Equal Spacing Action Buttons -->
+    <div class="listing-buttons">
+      <a href="createlisting.html" class="btn btn-primary btn-lg">Create Listing</a>
+      <a href="activelisting.html" class="btn btn-success btn-lg">Active Listing</a>
+    </div>
+
+    
+  </div>
+
+  <!-- Bootstrap JavaScript -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

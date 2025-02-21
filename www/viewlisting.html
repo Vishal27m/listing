@@ -1,0 +1,185 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if message %}
+        <div class="alert alert-{{msg_type}}">{{ message }}</div>
+    {% endif %}
+
+    <div class="container product-detail">
+        <h1><strong>{{ product.title }}</strong></h1>
+        <img src="{{ product.image_link }}" alt="Product Image" class="product-image">
+        
+        <p><strong>Description: </strong>{{ product.description }}</p>
+        <p><strong>Category: </strong>{{ product.category }}</p>
+        <p><strong>Current Bid Price: </strong>{{ product.starting_bid }}$</p>
+        <p><strong>Seller: </strong>{{ product.seller }}</p>
+        <p><strong>Created on: </strong>{{ product.created_at }}</p>
+
+        {% if added %}
+            <a href="{% url 'addtowatchlist' product.id %}" class="btn btn-danger btn-sm">Remove from Watchlist</a>
+        {% else %}
+            <a href="{% url 'addtowatchlist' product.id %}" class="btn btn-success btn-sm">Add to Watchlist</a>
+        {% endif %}
+
+        {% if user.username != product.seller %}
+            <div class="bid-section mt-3">
+                <p><strong>Place your Bid:</strong></p>
+                <form action="{% url 'viewlisting' product.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="input-group compact-form">
+                        <input class="form-control form-control-sm" type="text" name="newbid" placeholder="Your Bid">
+                        <div class="input-group-append">
+                            <input class="btn btn-primary btn-sm" type="submit" value="Submit">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+
+        <!-- Displaying comments -->
+        <div class="comments-section mt-4">
+            <h5>Comments</h5>
+            {% if comments %}
+                {% for comment in comments %}
+                    <div class="card comment-card mb-2">
+                        <div class="card-header p-2">{{ comment.user }}</div>
+                        <div class="card-body p-2">
+                            <p class="mb-1">{{ comment.comment }}</p>
+                            <small class="text-muted">{{ comment.timestamp }}</small>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No Comments Found</p>
+            {% endif %}
+        </div>
+
+        {% if user.username != product.seller %}
+            <div class="add-comment-section mt-3">
+                <h5>Add Comment</h5>
+                <form action="{% url 'addcomment' product.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group compact-form">
+                        <textarea class="form-control form-control-sm" name="comment" rows="2" placeholder="Your Comment"></textarea>
+                    </div>
+                    <input class="btn btn-primary btn-sm" type="submit" value="Submit">
+                </form>
+            </div>
+        {% endif %}
+
+        {% if user.username == product.seller %}
+            <a href="{% url 'closebid' product.id %}" class="btn btn-info btn-sm mt-3">Close Bid</a>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f9f9f9;
+    }
+
+    .container {
+        max-width: 500px; /* Reduced width to make the layout more square-like */
+        margin: 20px auto;
+        padding: 15px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-image {
+        height: 200px; /* Keeping image compact */
+        width: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+        text-align: center; /* Centering the title */
+    }
+
+    p {
+        font-size: 0.9em;
+        margin-bottom: 8px;
+        text-align: center; /* Centering product details */
+    }
+
+    .btn {
+        padding: 6px 12px;
+        font-size: 0.8em;
+        border-radius: 5px;
+        display: block; /* Ensure buttons take full width */
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .bid-section {
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .comments-section,
+    .add-comment-section {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .comment-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        background-color: #fff;
+        max-width: 200px; /* Reducing width to make the card more square */
+        margin: 10px auto; /* Centering the card */
+    }
+
+    .card-header {
+        background-color: #007bff;
+        color: #fff;
+        padding: 5px; /* Reduced padding */
+        font-size: 0.9em;
+    }
+
+    .card-body {
+        padding: 5px; /* Reduced padding */
+        font-size: 0.85em; /* Reduced font size */
+        text-align: center; /* Centering the text */
+        max-width: 200px; /* Matching the width of the form */
+        margin: 0 auto;
+    }
+
+    .compact-form .form-control,
+    .compact-form textarea {
+        max-width: 600px; /* Smaller input width for square-like form */
+        font-size: 0.85em;
+        padding: 5px 8px;
+        margin: 0 auto;
+    }
+
+    .compact-form .btn {
+        font-size: 0.85em;
+        padding: 5px 10px;
+        width: 100%; /* Full-width buttons */
+    }
+
+    .add-comment-section textarea {
+        max-width: 200px; /* Smaller width to give it a more square-like shape */
+        height: 100px;     /* Set a fixed height to reduce lengthiness */
+        font-size: 0.85em;
+        padding: 5px;
+        margin: 0 auto;
+        resize: none;      /* Disable resizing to keep the square shape */
+    }
+
+    textarea {
+        resize: none;
+    }
+</style>
+{% endblock %}

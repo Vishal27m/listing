@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Category Listings</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    #category-title {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 2rem;
+      color: #333;
+    }
+
+    .listings-container {
+      margin-top: 20px;
+    }
+
+    .listing-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.2s ease;
+      padding: 10px;
+      margin-bottom: 20px;
+      width: 100%; /* Make it responsive */
+      height: 250px; /* Fixed height */
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    .listing-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .listing-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .listing-card-body {
+      padding: 5px;
+      text-align: center;
+    }
+
+    .listing-title {
+      font-size: 1.1rem;
+      color: #007bff;
+      margin-bottom: 5px;
+    }
+
+    .listing-description {
+      color: #555;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+
+    .price-info {
+      font-weight: bold;
+      color: #28a745;
+    }
+
+    .no-listings {
+      text-align: center;
+      color: #777;
+      font-size: 1.5rem;
+      margin-top: 20px;
+    }
+
+    /* Responsive design for small screens */
+    @media (max-width: 768px) {
+      #category-title {
+        font-size: 1.8rem;
+      }
+
+      .listing-card {
+        height: 220px; /* Smaller height for mobile */
+      }
+
+      .listing-title {
+        font-size: 1rem;
+      }
+
+      .listing-description {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <h1 id="category-title">Listings</h1>
+    <div class="row listings-container" id="listings-container"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = urlParams.get('category');
+
+      document.getElementById('category-title').innerText = `${category} Listings`;
+
+      fetch(`/api/listings/${category}`)
+        .then(response => response.json())
+        .then(data => {
+          const container = document.getElementById('listings-container');
+          if (data.listings.length === 0) {
+            container.innerHTML = '<p class="no-listings">No active listings available for this category.</p>';
+          } else {
+            data.listings.forEach(listing => {
+              const card = document.createElement('div');
+              card.className = 'col-sm-6 col-md-4 col-lg-3'; // Adjust for responsive grid
+              card.innerHTML = `
+                <div class="listing-card">
+                  <img src="${listing.image_url || 'uploads/default.jpg'}" alt="Listing Image">
+                  <div class="listing-card-body">
+                    <h5 class="listing-title">${listing.title || 'No Title'}</h5>
+                    <p class="listing-description">${listing.description || 'No Description'}</p>
+                    <p class="price-info">Starting Bid: $${listing.starting_bid || 'N/A'}</p>
+                    <p class="price-info">Current Bid: $${listing.current_bid || 'No bids yet'}</p>
+                    <p>Start Date: ${new Date(listing.start_date).toLocaleString()}</p>
+                  </div>
+                </div>
+              `;
+              container.appendChild(card);
+            });
+          }
+        })
+        .catch(error => console.error('Error fetching listings:', error));
+    });
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Reset default styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Body and background */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* Container for the form */
+    .container {
+      max-width: 600px;
+      width: 100%;
+      padding: 2rem;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center; /* Centers the text and contents */
+    }
+
+    /* Jumbotron area */
+    .jumbotron {
+      text-align: center;
+      padding: 2rem;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Heading style */
+    .jumbotron h1 {
+      font-size: 2.5rem;
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Form group */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    /* Labels */
+    .form-group label {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+  /* Input fields */
+  .form-control {
+    width: 80%; /* Reduced width for smaller form */
+    padding: 0.5rem; /* Reduced padding */
+    font-size: 0.8rem; /* Reduced font size */
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+    /* Focus state for input fields */
+    .form-control:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+    }
+
+    /* Button styling */
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 5px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    /* Back Button Styling */
+    .btn-back {
+      background-color: #dc3545; /* Red color */
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 5px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .btn-back:hover {
+      background-color: #c82333; /* Darker red on hover */
+    }
+
+    /* Flex container for buttons */
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem; /* Space between buttons */
+      margin-top: 1.5rem;
+    }
+
+    /* Alert box styling */
+    .alert {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border-radius: 5px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    /* Success and error alert colors */
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .alert-danger {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    /* Image styling */
+    .embed-responsive {
+      display: block;
+      margin: 0 auto; /* Centers the image */
+      width: 60%; /* Adjust width as needed */
+      max-width: 300px; /* Ensure image doesn't stretch too much */
+      height: auto; /* Keep aspect ratio intact */
+    }
+
+    /* Links */
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="jumbotron">
+      <!-- Dashboard Image (Centered) -->
+      <img src="./img/forregister.svg" alt="Register Image" class="embed-responsive">
+      <br><br>
+
+      <h1>Register</h1>
+      <form id="register-form" method="POST" action="/register">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="confirm_password">Confirm Password</label>
+          <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+        </div>
+        
+        <!-- Button Container with Flexbox -->
+        <div class="button-container">
+          <button type="submit" class="btn btn-primary">Register</button>
+          <button type="button" class="btn-back" onclick="window.history.back()">Back</button>
+        </div>
+      </form>
+
+      <div id="message" style="display:none;" class="alert"></div>
+    </div>
+  </div>
+  <script>
+    document.getElementById('register-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const form = event.target;
+      const formData = new FormData(form);
+      const messageElement = document.getElementById('message');
+
+      // Check if passwords match
+      const password = formData.get('password');
+      const confirmPassword = formData.get('confirm_password');
+      if (password !== confirmPassword) {
+        messageElement.style.display = 'block';
+        messageElement.className = 'alert alert-danger';
+        messageElement.textContent = 'Passwords do not match';
+        return;
+      }
+
+      fetch(form.action, {
+        method: form.method,
+        body: new URLSearchParams(formData)
+      })
+      .then(response => response.text())
+      .then(data => {
+        messageElement.style.display = 'block';
+        if (data === 'User registered successfully') {
+          messageElement.className = 'alert alert-success';
+          messageElement.textContent = data;
+          form.reset();
+        } else {
+          messageElement.className = 'alert alert-danger';
+          messageElement.textContent = data;
+        }
+      })
+      .catch(error => {
+        messageElement.style.display = 'block';
+        messageElement.className = 'alert alert-danger';
+        messageElement.textContent = 'An error occurred. Please try again.';
+        console.error('Error:', error);
+      });
+    });
+  </script>
+</body>
+</html>

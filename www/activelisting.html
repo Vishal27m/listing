@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Active Listings</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Header Styling */
+    .header {
+      background-color: #343a40;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h2 {
+      margin: 0;
+      text-align: center;
+      flex: 1;
+    }
+
+    .btn-back {
+      background-color: white;
+      color: #007bff;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .btn-back:hover {
+      background-color: #e6e6e6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .grid {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  gap: 20px; /* Space between items */
+}
+
+.card {
+  width: 100%; /* Make each card take full width */
+  max-width: 600px; /* Optional: Limit max width for better readability */
+  margin: 0 auto; /* Center the cards */
+}
+
+    .btn {
+      padding: 8px 12px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .btn-green {
+      background-color: green;
+      color: white;
+    }
+
+    .btn-red {
+      background-color: red;
+      color: white;
+    }
+
+    .btn-close {
+      background-color: grey;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header with Back Button -->
+  <div class="header">
+    <h2>Active Listings</h2>
+    <button class="btn-back" onclick="window.history.back()">Back</button>
+  </div>
+
+  <div class="container">
+    <div id="listings-container" class="grid"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('/api/listings')
+        .then(response => response.json())
+        .then(data => {
+          const listingsContainer = document.getElementById('listings-container');
+
+          if (data.listings.length === 0) {
+            listingsContainer.innerHTML = '<p>No Active Listings available</p>';
+          } else {
+            data.listings.forEach(listing => {
+              const currentBid = listing.current_bid !== null ? listing.current_bid : listing.starting_bid;
+
+              const listingElement = document.createElement('div');
+              listingElement.className = 'card';
+              listingElement.innerHTML = `
+                <h3>${listing.title}</h3>
+                <p>Current Bid: $<span id="current-bid-${listing.id}">${currentBid}</span></p>
+                <p>Bidder: <span id="bidder-name-${listing.id}">${listing.bidder_name || 'No bidder yet'}</span></p>
+                <form onsubmit="placeBid(event, ${listing.id})">
+                  <input type="text" id="bidder-name-input-${listing.id}" placeholder="Your Name" required />
+                  <input type="number" id="bid-input-${listing.id}" min="${currentBid + 1}" step="0.01" required />
+                  <button type="submit" class="btn btn-green">Place Bid</button>
+                </form>
+                <button class="btn btn-close" onclick="closeBidding(${listing.id})">Close Bidding</button>
+                <p id="error-${listing.id}" style="color: red;"></p>
+              `;
+              listingElement.id = `card-${listing.id}`;
+              listingsContainer.appendChild(listingElement);
+            });
+          }
+        });
+
+      window.placeBid = function (event, listingId) {
+        event.preventDefault();
+        const bidderName = document.getElementById(`bidder-name-input-${listingId}`).value.trim();
+        const bidInput = document.getElementById(`bid-input-${listingId}`);
+        const bidAmount = parseFloat(bidInput.value);
+        const errorElement = document.getElementById(`error-${listingId}`);
+
+        errorElement.textContent = ''; // Clear previous error messages
+
+        if (!bidderName) {
+          errorElement.textContent = 'Please enter your name.';
+          return;
+        }
+
+        if (!/^[A-Za-z\s]+$/.test(bidderName)) {
+          errorElement.textContent = 'Bidder name must contain only letters and spaces.';
+          return;
+        }
+
+        if (isNaN(bidAmount) || bidAmount <= 0) {
+          errorElement.textContent = 'Please enter a valid bid.';
+          return;
+        }
+
+        fetch(`/api/bid/${listingId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bidAmount, bidderName })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert(data.message);
+              document.getElementById(`current-bid-${listingId}`).textContent = data.newBid;
+              document.getElementById(`bidder-name-${listingId}`).textContent = bidderName;
+              bidInput.value = '';
+              document.getElementById(`bidder-name-input-${listingId}`).value = '';
+              errorElement.textContent = '';
+            } else {
+              errorElement.textContent = data.error;
+            }
+          })
+          .catch(() => {
+            errorElement.textContent = 'Error placing bid. Please try again.';
+          });
+      };
+
+      window.closeBidding = function (listingId) {
+        const listingElement = document.getElementById(`card-${listingId}`);
+        const bidderName = document.getElementById(`bidder-name-${listingId}`).textContent.trim();
+        const currentBid = document.getElementById(`current-bid-${listingId}`).textContent;
+        
+        // Ask for bid owner credentials
+        const bidOwnerName = prompt('Enter the bid owner name:');
+        const password = prompt('Enter the password for the bid owner:');
+
+        if (!bidOwnerName || !password) {
+          alert('Both name and password are required.');
+          return;
+        }
+
+        // Send the credentials to the backend to verify
+        fetch(`/api/close-bid/${listingId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bidOwnerName, password, currentBid, bidderName })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Bidding closed successfully!');
+              // Remove the listing from the page
+              listingElement.remove();
+            } else {
+              alert(data.error || 'Invalid credentials or error closing bid.');
+            }
+          })
+          .catch(() => {
+            alert('Error closing bid.');
+          });
+      };
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Reset default styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Body and background */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* Container for the form */
+    .container {
+      max-width: 600px;
+      width: 100%;
+      padding: 2rem;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    /* Jumbotron area */
+    .jumbotron {
+      padding: 2rem;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Heading style */
+    .jumbotron h1 {
+      font-size: 2.5rem;
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Form group */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    /* Input fields */
+    .form-control {
+      width: 80%;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    /* Button styling */
+    .btn-primary, .btn-back {
+      width: 30%;
+      padding: 0.75rem;
+      border-radius: 5px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-back {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+    }
+
+    .btn-back:hover {
+      background-color: #c82333;
+    }
+
+    /* Flex container for buttons */
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Alert box styling */
+    .alert {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border-radius: 5px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    /* Image styling */
+    .embed-responsive {
+      display: block;
+      margin: 0 auto;
+      width: 60%;
+      max-width: 300px;
+      height: auto;
+    }
+
+    /* Links */
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="jumbotron">
+      <img src="./img/forlogin.svg" alt="Login Image" class="embed-responsive">
+      <br><br>
+      <h1>Login</h1>
+
+      <form id="login-form">
+        <div class="form-group">
+          <input autofocus class="form-control" type="text" name="username" placeholder="Username" required>
+        </div>
+        <div class="form-group">
+          <input class="form-control" type="password" name="password" placeholder="Password" required>
+        </div>
+
+        <!-- Button Container with Flexbox -->
+        <div class="button-container">
+          <input class="btn btn-primary" type="submit" value="Login">
+          <button type="button" class="btn-back" onclick="window.history.back()">Back</button>
+        </div>
+      </form>
+
+      <br>
+      <p>Don't have an account? <a href="register.html">Register here.</a></p>
+
+      <div id="message" style="display:none;" class="alert"></div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      window.location.href = 'home.html';
+    });
+  </script>
+</body>
+</html>
