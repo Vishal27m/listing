@@ -2,9 +2,9 @@ const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const path = require('path');
+const app = express();
 require('dotenv').config();
 
-const app = express();
 
 
 const db = mysql.createConnection({
@@ -29,7 +29,6 @@ db.connect((err) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'www')));
-
 
 // Endpoint to handle registration
 app.post('/register', (req, res) => {
@@ -270,7 +269,8 @@ app.post("/api/dashboard-data", (req, res) => {
 });
 
 
-const port = process.env.port || 5000;
+
+const port = 3000;
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Server running at http://localhost:${port}/`);
 });
